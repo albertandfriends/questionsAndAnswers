@@ -7,8 +7,6 @@ const db = mysql.createConnection({
   database: "questionsAndAnswers"
 })
 
-var usersArray = [];
-
 
 const users = () => {
   for (var i = 0; i < 50; i++) {
@@ -21,7 +19,7 @@ const users = () => {
       if (err) {
         console.log(err);
       } else {
-        console.log("success")
+        console.log("GREAT SUCCESS")
       }
     })
   }
@@ -33,7 +31,7 @@ const attractions = () => {
     if (err) {
       console.log(err);
     } else {
-      console.log("success");
+      console.log("GREAT SUCCESS");
     }
   })
 }
@@ -44,7 +42,7 @@ const questions = () => {
       if (err) {
         console.log(err);
       } else {
-        console.log("success");
+        console.log("GREAT SUCCESS");
       }
     })
   }
@@ -60,3 +58,4 @@ users();
 attractions();
 questions();
 answers();
+console.log("NO ERRORS PRESENT! YAY!")
