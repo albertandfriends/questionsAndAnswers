@@ -19,8 +19,8 @@ app.get("/api/questions", (req, res) => {
 })
 
 app.get("/api/answers", (req, res) => {
-  console.log(req.body);
-  db.getAnswers(req.body.questionID, (err, result) => {
+  // console.log(req.query);
+  db.getAnswers(req.query.questionID, (err, result) => {
     if (err) {
       res.send("No answers for this question!")
     } else {
