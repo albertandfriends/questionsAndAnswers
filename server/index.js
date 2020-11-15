@@ -24,7 +24,16 @@ app.get("/api/answers", (req, res) => {
     if (err) {
       res.send("No answers for this question!")
     } else {
-      res.send(result);
+      var newResult = {};
+      newResult.answers = result;
+      var mostVoted = result[0];
+      for (var i = 1; i < result.length; i++) {
+        if (result[i].votes > mostVoted.votes) {
+          mostVoted = result[i];
+        }
+      }
+      newResult.mostVoted = mostVoted;
+      res.send(newResult);
     }
   })
 })

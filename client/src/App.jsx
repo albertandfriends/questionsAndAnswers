@@ -7,6 +7,9 @@ class App extends React.Component {
     super(props)
     this.state = {
       questions: [],
+      pageLimit: 10,
+      totalPages: {},
+      currentPage: null
     }
 
     this.getQuestions = this.getQuestions.bind(this);
@@ -21,12 +24,31 @@ class App extends React.Component {
     })
   }
 
+  paginateButtons() {
+    var totalNumberOfPages = Math.ceil(this.state.questions.length / this.state.pageLimit);
+    var pagesObject = {};
+    var startingIndex = 0;
+    for (var i = 1; i <= totalNumberOfPages; i++) {
+      pagesObject[i] = [];
+      var counter = startingIndex;
+      for (var j = startingIndex; j < startingIndex + pageLimit; j++) {
+        pagesObject[i].push(this.state.questions[j]);
+        counter += 1;
+      }
+      startingIndex = counter;
+    }
+    this.setState({
+      totalPages: pagesObject
+    })
+  }
+
 
   // insertNewQuestion(event) {
   //   axios.post("/api/postQuestion", {
 
   //   })
   // }
+
   componentDidMount() {
     this.getQuestions();
   }
@@ -38,6 +60,11 @@ class App extends React.Component {
         <button onClick={this.getAnswers}>Push me!</button> */}
         {/* {console.log(this.state.questions)} */}
         <QuestionList questions = {this.state.questions}/>
+        {/* <div>
+          {Object.keys(this.state.totalPages).map(page =>
+            <button onClick={}>{page}</button>
+          )}
+        </div> */}
       </div>
     )
   }

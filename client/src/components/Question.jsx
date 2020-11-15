@@ -1,6 +1,7 @@
 import React from 'react';
 import AnswerList from './AnswerList.jsx'
-import axios from 'axios'
+import axios from 'axios';
+import Answer from './Answer.jsx'
 
 
 class Question extends React.Component {
@@ -9,10 +10,13 @@ class Question extends React.Component {
 
     this.state = {
       question: props.question,
-      answers: []
+      answers: [],
+      showAllAnswers: false,
+      mostVotedAnswer: null
     }
 
     this.getAnswers = this.getAnswers.bind(this);
+    this.showAll = this.showAll.bind(this);
   }
 
   getAnswers(event) {
@@ -22,9 +26,18 @@ class Question extends React.Component {
       }
     })
     .then((result) => {
+      var mostVoted;
       this.setState({
-        answers: result.data
+        answers: result.data.answers,
+        mostVotedAnswer: result.data.mostVoted
       })
+    })
+  }
+
+
+  showAll(event) {
+    this.setState({
+      showAllAnswers: !this.state.showAllAnswers
     })
   }
 
@@ -40,9 +53,14 @@ class Question extends React.Component {
         <p>Location: {this.state.question.location}</p>
         <p>Contributions: {this.state.question.contributions}</p>
         <p>Review: {this.state.question.text}</p>
-        <AnswerList answers={this.state.answers}/>
-        <p>-----------------------------------------------------------------------</p>
+        {this.state.answers.length > 0
+        ? <AnswerList mostVotedAnswer={this.state.mostVotedAnswer} showAllAnswers={this.state.showAllAnswers} showAll={this.showAll} answers={this.state.answers}/>
+        : <form>
+            <input></input>
+            <button>Answer Question!</button>
+          </form>}
 
+        <p>-----------------------------------------------------------------------</p>
       </div>
     )
   }

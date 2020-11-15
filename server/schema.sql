@@ -21,6 +21,7 @@ CREATE TABLE users (
   username VARCHAR(50),
   location VARCHAR(100),
   contributions INT,
+  helpful_votes INT,
   profilePic VARCHAR(300),
   PRIMARY KEY (id)
 );

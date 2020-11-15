@@ -17,12 +17,21 @@ module.exports = {
     })
   },
   getAnswers: (questionID, callback) => {
-    db.query(`SELECT users.*, answers.* FROM answers INNER JOIN users ON answers.userID = users.id INNER JOIN questions ON answers.questionsID = questions.id WHERE questions.id = '${questionID}';`, (err, result) => {
+    db.query(`SELECT users.*, answers.* FROM answers INNER JOIN users ON answers.userID = users.id INNER JOIN questions ON answers.questionsID = questions.id WHERE questions.id = '${questionID}' ORDER BY answers.votes DESC;`, (err, result) => {
       if (err) {
         callback(err, null)
       } else {
         callback(null, result);
       }
     })
-  }
+  },
+  // getMaxVoteAnswer: (questionID, callback) => {
+  //   db.query(`SELECT users.*, answers.text, MAX(answers.votes) FROM answers INNER JOIN users ON answers.userID = users.id INNER JOIN questions ON answers.questionsID = questions.id WHERE questions.id = '${questionID}';`, (err, result) => {
+  //     if (err) {
+  //       callback(err, null);
+  //     } else {
+  //       callback(null, result);
+  //     }
+  //   })
+  // }
 }

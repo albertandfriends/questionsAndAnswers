@@ -2,8 +2,13 @@ import React from 'react';
 
 const Answer = (props) => (
   <div>
-    <h3>Answer from {props.answer.username}: </h3>
+    <h5>Answer from {props.answer.username}: </h5>
     <p>{props.answer.text}</p>
+    <div>
+      <button>+</button>
+      <p>{props.answer.votes} votes</p>
+      <button>-</button>
+    </div>
   </div>
 )
 
