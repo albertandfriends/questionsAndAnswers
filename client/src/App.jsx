@@ -42,6 +42,7 @@ class App extends React.Component {
     })
   }
 
+    // Paginating
 
   // insertNewQuestion(event) {
   //   axios.post("/api/postQuestion", {
