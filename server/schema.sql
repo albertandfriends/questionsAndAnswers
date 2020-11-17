@@ -43,7 +43,7 @@ CREATE TABLE answers (
   userID INT,
   text VARCHAR(2000),
   votes INT,
-  date VARCHAR(250),
+  date DATETIME,
   PRIMARY KEY (id),
   FOREIGN KEY (questionsID) REFERENCES questions(id),
   FOREIGN KEY (userID) REFERENCES users(id)

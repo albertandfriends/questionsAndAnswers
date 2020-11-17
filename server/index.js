@@ -8,8 +8,24 @@ app.use(express.static("client/dist"));
 app.use(express.json());
 app.use(cors());
 
+app.get("/api/count", (req, res) => {
+  db.getQuestionCount((err, result) => {
+    if (err) {
+      res.send("Oh no!")
+    } else {
+      var pageLimit = 5;
+      var newResult = Math.ceil(Object.values(result[0])[0] / pageLimit);
+      var newArray = [];
+      for (var i = 1; i <= newResult; i++) {
+        newArray.push(i);
+      }
+      res.send(newArray);
+    }
+  })
+})
+
 app.get("/api/questions", (req, res) => {
-  db.getQuestions((err, result) => {
+  db.getFilteredQuestions(req.query.start, req.query.end, (err, result) => {
     if (err) {
       res.send("Oh no!")
     } else {
@@ -41,3 +57,21 @@ app.get("/api/answers", (req, res) => {
 app.listen(port, () => {
   console.log("Listening on port " + port);
 })
+
+
+
+
+            // var pageLimit = 5;
+      // var totalPages = Math.ceil(result.length / pageLimit);
+      // var newResult = {};
+      // newResult.questions = result;
+      // newResult.pages = {};
+      // var startingIndex = 0;
+      // for (var page = 1; page <= totalPages; page++) {
+      //   newResult.pages[page] = [];
+      //   for (var question = startingIndex; question < startingIndex + pageLimit; question++) {
+      //     newResult.pages[page].push(result[question]);
+      //   }
+      //   startingIndex += pageLimit;
+      // }
+      // // console.log(newResult);

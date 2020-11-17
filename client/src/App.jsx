@@ -2,73 +2,108 @@ import React from 'react';
 import axios from 'axios';
 import QuestionList from './components/QuestionList.jsx';
 
+
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       questions: [],
-      pageLimit: 10,
-      totalPages: {},
-      currentPage: null
+      pageLimit: 5,
+      pages: [],
+      answers: {},
+      showAllAnswers: false,
+      mostVoted: {}
     }
 
-    this.getQuestions = this.getQuestions.bind(this);
+    this.getQuestionsAndAnswers = this.getQuestionsAndAnswers.bind(this);
+    this.changePage = this.changePage.bind(this);
+    this.showAll = this.showAll.bind(this);
   }
 
-  getQuestions(event) {
-    axios.get("/api/questions")
+  showAll(event) {
+    this.setState({
+      showAllAnswers: !this.state.showAllAnswers
+    })
+  }
+
+  changePage(event) {
+    this.getQuestionsAndAnswers(event.target.innerHTML);
+  }
+
+  getQuestionsAndAnswers(event) {
+    if (event !== undefined) {
+      var idStartPoint = 1 + (this.state.pageLimit * (Number(event) - 1));
+    } else {
+      var idStartPoint = 1;
+    }
+    axios.get("/api/questions", {
+      params: {
+        start: idStartPoint,
+        end: idStartPoint + (this.state.pageLimit - 1),
+      }
+    })
     .then((result) => {
       this.setState({
-        questions: result.data
+        questions: result.data,
       })
-    })
-  }
+      for (var i = 0; i < this.state.questions.length; i++) {
+        axios.get("/api/answers", {
+          params: {
+            questionID: this.state.questions[i].id
+          }
+        })
+        .then((result) => {
+          var newAnswers = this.state.answers;
+          newAnswers[result.data.answers[0].questionsID] = result.data.answers;
+          var mostVotedObject = this.state.mostVoted;
+          mostVotedObject[result.data.answers[0].questionsID] = result.data.mostVoted
 
-  paginateButtons() {
-    var totalNumberOfPages = Math.ceil(this.state.questions.length / this.state.pageLimit);
-    var pagesObject = {};
-    var startingIndex = 0;
-    for (var i = 1; i <= totalNumberOfPages; i++) {
-      pagesObject[i] = [];
-      var counter = startingIndex;
-      for (var j = startingIndex; j < startingIndex + pageLimit; j++) {
-        pagesObject[i].push(this.state.questions[j]);
-        counter += 1;
+          this.setState({
+            answers: newAnswers,
+            mostVoted: mostVotedObject,
+            // showAllAnswers: showAllObject
+          })
+        })
       }
-      startingIndex = counter;
-    }
-    this.setState({
-      totalPages: pagesObject
     })
   }
-
-    // Paginating
-
-  // insertNewQuestion(event) {
-  //   axios.post("/api/postQuestion", {
-
-  //   })
-  // }
 
   componentDidMount() {
-    this.getQuestions();
+    axios.get("/api/count")
+    .then((result) => {
+      this.setState({
+        pages: result.data
+      })
+      this.getQuestionsAndAnswers();
+    })
   }
 
   render() {
     return (
-      <div>
-        {/* <button onClick={this.getQuestions}>Push me!</button>
-        <button onClick={this.getAnswers}>Push me!</button> */}
-        {/* {console.log(this.state.questions)} */}
-        <QuestionList questions = {this.state.questions}/>
-        {/* <div>
-          {Object.keys(this.state.totalPages).map(page =>
-            <button onClick={}>{page}</button>
+      <div className="questionList">
+        <QuestionList mostVoted={this.state.mostVoted} showAllAnswers={this.state.showAllAnswers} showAll={this.showAll} answers={this.state.answers} questions = {this.state.questions}/>
+        <div className="buttons">
+          {this.state.pages.map(page =>
+            <button onClick={this.changePage}>{page}</button>
           )}
-        </div> */}
+        </div>
       </div>
     )
   }
 }
 
 export default App;
+
+
+      // showAllAnswers: {},
+
+
+          // var showAllObject = this.state.showAllAnswers;
+          // showAllObject[result.data.answers[0].questionsID] = false;
+
+
+    // var showAllObject = this.state.showAllAnswers;
+    // showAllObject[event.target.id] = !showAllObject[event.target.id];
+    // this.setState({
+    //   showAllAnswers: showAllObject
+    // })

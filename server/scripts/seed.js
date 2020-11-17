@@ -37,7 +37,7 @@ const attractions = () => {
 }
 
 const questions = () => {
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < 20; i++) {
     db.query(`INSERT INTO questions (userID, text, date, attractionID) VALUES ("${faker.random.number(49) + 1}", "${faker.lorem.paragraph()}", "${faker.date.past()}", 1)`, (err, result) => {
       if (err) {
         console.log(err);
@@ -49,8 +49,8 @@ const questions = () => {
 }
 
 const answers = () => {
-  for (var i = 0; i < 75; i++) {
-    db.query(`INSERT INTO answers (questionsID, userID, text, votes, date) VALUES ("${faker.random.number(9) + 1}", "${faker.random.number(49) + 1}", "${faker.lorem.paragraph()}", "${faker.random.number(50)}", "${faker.date.past()}")`)
+  for (var i = 0; i < 100; i++) {
+    db.query(`INSERT INTO answers (questionsID, userID, text, votes, date) VALUES ("${faker.random.number(19) + 1}", "${faker.random.number(49) + 1}", "${faker.lorem.paragraph()}", "${faker.random.number(50)}", "${faker.date.past()}")`)
   }
 }
 

@@ -1,81 +1,53 @@
 import React from 'react';
 import AnswerList from './AnswerList.jsx'
 import axios from 'axios';
-import Answer from './Answer.jsx'
+import Answer from './Answer.jsx';
+import styled, { css } from 'styled-components';
+
+const Head = styled.div`
+  display: block;
+  border-radius: 3px;
+  border: 1px solid gray;
+  margin: 0 1em;
+  padding: 10px;
+  background-color: white;
+  width: 900px;
+`
+const Header = styled.div`
+  display: inline-block;
+  padding: 10px;
+`
+
+const Username = styled.div`
+  font-weight: bold;
+`
 
 
-class Question extends React.Component {
-  constructor(props) {
-    super(props);
+const Question = (props) => (
+  <Head>
+    <Header>
+      <img width="50" height="50" src={props.question.profilePic}></img>
+    </Header>
+    <Header>
+      <p><Username>{props.question.username}</Username> asked a question</p>
+    </Header>
+    <div>
+      <Header>
+        <p>Location: {props.question.location}</p>
+      </Header>
+      <Header>
+        <p>Contributions: {props.question.contributions}</p>
+      </Header>
+    </div>
 
-    this.state = {
-      question: props.question,
-      answers: [],
-      showAllAnswers: false,
-      mostVotedAnswer: null
-    }
-
-    this.getAnswers = this.getAnswers.bind(this);
-    this.showAll = this.showAll.bind(this);
-  }
-
-  getAnswers(event) {
-    axios.get("/api/answers", {
-      params: {
-        questionID: this.state.question.id
-      }
-    })
-    .then((result) => {
-      var mostVoted;
-      this.setState({
-        answers: result.data.answers,
-        mostVotedAnswer: result.data.mostVoted
-      })
-    })
-  }
-
-
-  showAll(event) {
-    this.setState({
-      showAllAnswers: !this.state.showAllAnswers
-    })
-  }
-
-  componentDidMount() {
-    this.getAnswers();
-  }
-
-  render() {
-    return (
-      <div className="question">
-        {/* {console.log(this.state.question)} */}
-        <h5>Question from {this.state.question.username}:</h5>
-        <p>Location: {this.state.question.location}</p>
-        <p>Contributions: {this.state.question.contributions}</p>
-        <p>Review: {this.state.question.text}</p>
-        {this.state.answers.length > 0
-        ? <AnswerList mostVotedAnswer={this.state.mostVotedAnswer} showAllAnswers={this.state.showAllAnswers} showAll={this.showAll} answers={this.state.answers}/>
-        : <form>
-            <input></input>
-            <button>Answer Question!</button>
-          </form>}
-
-        <p>-----------------------------------------------------------------------</p>
-      </div>
-    )
-  }
-}
-
-// Remote Branch completed
-
-// const Question = (props) => (
-//   <div className="question">
-//     <p>User: {props.question.username}</p>
-//     <p>Location: {props.question.location}</p>
-//     <p>Contributions: {props.question.contributions}</p>
-//     <p>Review: {props.question.text}</p>
-//     <p>-----------------------------------------------------------------------</p>
-//   </div>
-// )
+    <p>{props.question.text}</p>
+    {Object.keys(props.answers).length > 0
+      ? <AnswerList questionID={props.question.id} mostVotedAnswer={props.mostVotedAnswer[props.question.id]} showAllAnswers={props.showAllAnswers} showAll={props.showAll} answers={props.answers[props.question.id]}/>
+      : <form>
+          <input></input>
+          <button>Answer Question!</button>
+        </form>}
+  </Head>
+)
 
 export default Question;

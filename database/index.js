@@ -7,8 +7,18 @@ const db = mysql.createConnection({
 })
 
 module.exports = {
-  getQuestions: (callback) => {
-    db.query("SELECT users.username, users.location, users.contributions, users.profilePic, questions.* FROM questions INNER JOIN attractions ON questions.attractionID = attractions.id INNER JOIN users ON questions.userID = users.id;", (err, result) => {
+  getQuestionCount: (callback) => {
+    db.query(`SELECT COUNT(*) FROM questions;`, (err, result) => {
+      if (err) {
+        callback(err, null)
+      } else {
+        callback(null, result);
+      }
+    })
+  },
+
+  getFilteredQuestions: (start, end, callback) => {
+    db.query(`SELECT users.username, users.location, users.contributions, users.profilePic, questions.* FROM questions INNER JOIN attractions ON questions.attractionID = attractions.id INNER JOIN users ON questions.userID = users.id WHERE questions.id >= ${start} AND questions.id <= ${end};`, (err, result) => {
       if (err) {
         callback(err, null)
       } else {
