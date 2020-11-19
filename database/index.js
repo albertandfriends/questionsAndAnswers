@@ -27,7 +27,7 @@ module.exports = {
     })
   },
   getAnswers: (questionID, callback) => {
-    db.query(`SELECT users.*, answers.* FROM answers INNER JOIN users ON answers.userID = users.id INNER JOIN questions ON answers.questionsID = questions.id WHERE questions.id = '${questionID}' ORDER BY answers.votes DESC;`, (err, result) => {
+    db.query(`SELECT users.*, answers.* FROM answers INNER JOIN users ON answers.userID = users.id INNER JOIN questions ON answers.questionsID = questions.id WHERE questions.id = "${questionID}" ORDER BY answers.votes DESC;`, (err, result) => {
       if (err) {
         callback(err, null)
       } else {
@@ -35,13 +35,32 @@ module.exports = {
       }
     })
   },
-  // getMaxVoteAnswer: (questionID, callback) => {
-  //   db.query(`SELECT users.*, answers.text, MAX(answers.votes) FROM answers INNER JOIN users ON answers.userID = users.id INNER JOIN questions ON answers.questionsID = questions.id WHERE questions.id = '${questionID}';`, (err, result) => {
-  //     if (err) {
-  //       callback(err, null);
-  //     } else {
-  //       callback(null, result);
-  //     }
-  //   })
-  // }
+  insertNewQuestion: (info, callback) => {
+    db.query(`SELECT * FROM users WHERE username="${info.username}";`, (err, result) => {
+      if (result.length > 0) {
+        db.query(`INSERT INTO questions (userID, text, date, attractionID) VALUES ((SELECT id FROM users WHERE username="${info.username}"), "${info.question}", "${info.date.substring(0, 10).split("-")[1] + info.date.substring(0, 10).split("-")[0]}", 1);`, (err, result) => {
+          if (err) {
+            callback(err, null);
+          } else {
+            callback(null, "Success!");
+          }
+        })
+      } else {
+        db.query(`INSERT INTO users (username, location, contributions, votes, profilePic) VALUES ("${info.username}", "${info.location}", "${info.contributions}", "${info.votes}", "${info.profilePic}");`, (err, result) => {
+          if (err) {
+            callback(err, null)
+          } else {
+            db.query(`INSERT INTO questions (userID, text, date, attractionID) VALUES ((SELECT id FROM users WHERE username="${info.username}"), "${info.question}", "${info.date.substring(0, 10)}", 1);`, (err, result) => {
+              if (err) {
+                callback(err, null);
+              } else {
+                callback(null, "Success!");
+              }
+            })
+          }
+        })
+      }
+    })
+
+  }
 }

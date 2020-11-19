@@ -53,8 +53,8 @@ const Answer = (props) => (
       <img width="30" height="30" src={props.answer.profilePic}></img>
     </Votes>
     <Header>
-      <p>Answer from <span className="username">{props.answer.username}</span></p>
-      <p>{props.answer.date} | <button className="answermodal">...</button></p>
+      <p>Answer from <span className="username">{props.answer.username}</span><br></br>{props.answer.date} | <button className="answermodal">...</button></p>
+      <p></p>
     </Header>
       <p className="answer">{props.answer.text}</p>
     <Votes>

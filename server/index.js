@@ -55,6 +55,16 @@ app.get("/api/answers", (req, res) => {
   })
 })
 
+app.post("/api/add", (req, res) => {
+  db.insertNewQuestion(req.body, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  })
+})
+
 app.listen(port, () => {
   console.log("Listening on port " + port);
 })

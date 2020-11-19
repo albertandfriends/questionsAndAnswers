@@ -11,7 +11,6 @@ const Questions = styled.div`
 `
 
 const Header = styled.div`
-  border: 1px solid gray;
   margin: 20px;
   padding: 10px;
   background-color: white;
@@ -112,6 +111,8 @@ class App extends React.Component {
     super(props)
     this.state = {
       questions: [],
+      questionToInsert: "",
+      answerToInsert: "",
       pageLimit: 5,
       pages: [],
       answers: {},
@@ -130,21 +131,63 @@ class App extends React.Component {
     this.toggleFollow = this.toggleFollow.bind(this);
     this.showAnswerModal = this.showAnswerModal.bind(this);
     this.nextOrPrevious = this.nextOrPrevious.bind(this);
+    this.askQuestion = this.askQuestion.bind(this);
+    this.addQuestion = this.addQuestion.bind(this);
+    this.changeQuestion = this.changeQuestion.bind(this);
+    this.addAnswer = this.addAnswer.bind(this);
+    this.changeAnswer = this.changeAnswer.bind(this);
   }
 
-  showAll(event) {
-    this.setState({
-      showAllAnswers: !this.state.showAllAnswers
+  // Insert Methods
+
+  addQuestion() {
+    axios.post("/api/add", {
+      question: this.state.questionToInsert,
+      username: "albertollini",
+      location: "San Francisco, CA",
+      profilePic: "https://artists.ultramusicfestival.com/wp-content/uploads/2018/05/illenium-2019.jpg",
+      contributions: 172,
+      votes: 50,
+      date: new Date()
+    })
+    .then((result) => {
+      console.log(result.data);
     })
   }
 
-  showAnswerModal(event) {
-    var newAnswerModalObject = this.state.showAnswerModal;
-    newAnswerModalObject[event.target.name] = !newAnswerModalObject[event.target.name]
+  changeQuestion(event) {
     this.setState({
-      showAnswerModal: newAnswerModalObject
+      questionToInsert: event.target.value
     })
   }
+
+  addAnswer(event) {
+    axios.post("/api/addAnswer", {
+      answer: this.state.answerToInsert,
+      questionID: event.target.name,
+      username: "albertollini",
+      profilePic: "https://artists.ultramusicfestival.com/wp-content/uploads/2018/05/illenium-2019.jpg",
+      contributions: 172,
+      votes: 50,
+      date: new Date()
+    })
+    .then((result) => {
+      console.log(result.data);
+      var newAnswerModalObject = this.state.showAnswerModal;
+      newAnswerModalObject[event.target.name] = false;
+      this.setState({
+        showAnswerModal: newAnswerModalObject
+      })
+    })
+  }
+
+  changeAnswer(event) {
+    this.setState({
+      answerToInsert: event.target.value
+    })
+  }
+
+  // Toggles for Following/Reporting and Answers
 
   toggleFollow(event) {
     var newFollowObject = this.state.showFollow;
@@ -154,9 +197,41 @@ class App extends React.Component {
     })
   }
 
+  showAll(event) {
+    this.setState({
+      showAllAnswers: !this.state.showAllAnswers
+    })
+  }
+
+  // Modals
+
+  askQuestion(event) {
+    if (!this.state.askQuestion) {
+      this.setState({
+        askQuestion: true
+      })
+      event.preventDefault();
+    }
+  }
+
+  showAnswerModal(event) {
+    var newAnswerModalObject = this.state.showAnswerModal;
+    newAnswerModalObject[event.target.name] = true;
+    this.setState({
+      showAnswerModal: newAnswerModalObject
+    })
+  }
+
+  // Change pages
+
+  changePage(event) {
+    this.getQuestionsAndAnswers(event.target.innerHTML);
+  }
+
+
   nextOrPrevious(event) {
     if (event.target.name === "previous") {
-      if (this.state.currentPage > 1) {
+      if (Number(this.state.currentPage) > 1) {
         this.getQuestionsAndAnswers(this.state.currentPage - 1);
       }
     } else {
@@ -166,13 +241,14 @@ class App extends React.Component {
     }
   }
 
-  changePage(event) {
-    this.getQuestionsAndAnswers(event.target.innerHTML);
-  }
+  // Main method
 
   getQuestionsAndAnswers(event) {
     if (event !== undefined) {
       var idStartPoint = 1 + (this.state.pageLimit * (Number(event) - 1));
+      this.setState({
+        currentPage: Number(event)
+      })
     } else {
       var idStartPoint = 1;
     }
@@ -185,7 +261,6 @@ class App extends React.Component {
     .then((result) => {
       this.setState({
         questions: result.data,
-        currentPage: Number(event)
       })
       for (var i = 0; i < this.state.questions.length; i++) {
         axios.get("/api/answers", {
@@ -231,17 +306,20 @@ class App extends React.Component {
           <h1>Questions & Answers</h1>
           <span className="description">See all 20 Questions</span>
           <form>
-            <button className="questionButton">Ask a Question</button>
+            <button className="questionButton" onClick={this.askQuestion}>Ask a Question</button>
             <button className="answerModalButton"><img width="18" height="15" src="https://img.icons8.com/fluent-systems-regular/24/000000/sort-down.png"/></button>
           </form>
         </Header>
-        <QuestionList showAnswerModal = {this.state.showAnswerModal} toggleFollow={this.toggleFollow} showFollow={this.state.showFollow} mostVoted={this.state.mostVoted} showAllAnswers={this.state.showAllAnswers} showAll={this.showAll} answers={this.state.answers} questions = {this.state.questions}/>
+        <QuestionList showAnswerModal = {this.state.showAnswerModal} toggleAnswerModal = {this.showAnswerModal} toggleFollow={this.toggleFollow} showFollow={this.state.showFollow} mostVoted={this.state.mostVoted} showAllAnswers={this.state.showAllAnswers} showAll={this.showAll} answers={this.state.answers} questions = {this.state.questions}/>
+        {this.state.askQuestion
+        ? <AskQuestion addQuestion={this.addQuestion} questionToInsert={this.state.questionToInsert} changeQuestion={this.changeQuestion} attraction={{title: "Winchester Mystery House"}}/>
+        : <div></div>}
         <Buttons>
-          <button onClick={this.nextOrPrevious} className="previous">Previous</button>
+          <button onClick={this.nextOrPrevious} className="previous" name = "previous">Previous</button>
           {this.state.pages.map(page =>
             <button className="buttonNames" onClick={this.changePage}>{page}</button>
           )}
-          <button onClick={this.nextOrPrevious} className="next">Next</button>
+          <button onClick={this.nextOrPrevious} className="next" name = "next">Next</button>
         </Buttons>
       </Questions>
     )

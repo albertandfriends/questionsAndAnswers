@@ -3,10 +3,10 @@ import AnswerList from './AnswerList.jsx'
 import axios from 'axios';
 import Answer from './Answer.jsx';
 import styled, { css } from 'styled-components';
-import FollowModal from './FollowModal.jsx'
+import FollowModal from './FollowModal.jsx';
+import AnswerQuestion from './AnswerQuestion.jsx';
 
 const Head = styled.div`
-  border: 1px solid gray;
   margin-bottom: 20px;
   padding: 10px;
   img {
@@ -77,7 +77,7 @@ const Question = (props) => (
     </Modal>
 
     <Header>
-      <p><span className="username">{props.question.username}</span> asked a question {props.question.date}</p>
+      <p><span className="username">{props.question.username}</span> asked a question {props.question.date}<br></br></p>
       <span className="info"><img src="https://img.icons8.com/android/12/000000/marker.png"/> {props.question.location} • <span className="contributions">{props.question.contributions}</span> Contributions • <span className="contributions">{props.question.votes}</span> helpful votes</span>
     </Header>
     <p className="question">{props.question.text}</p>
@@ -89,9 +89,9 @@ const Question = (props) => (
         </form>}
     <Form>
       <img src="https://img.icons8.com/fluent-systems-regular/24/000000/user-male-circle.png"/>
-      <input defaultValue="Answer Question" onClick={props.toggleAnswerModal}></input>
+      <input name={props.question.id} defaultValue="Answer Question" onChange={props.changeAnswer} onClick={props.toggleAnswerModal}></input>
       {props.showAnswerModal
-      ? <AnswerQuestion />
+      ? <AnswerQuestion addAnswer={props.addAnswer} question={props.question.id} attraction={{title: "Winchester Mystery House"}}/>
       : <p></p>}
     </Form>
   </Head>
