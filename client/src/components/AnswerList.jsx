@@ -2,16 +2,20 @@ import React from 'react';
 import Answer from './Answer.jsx';
 import styled, { css } from 'styled-components';
 
-const Form = styled.form`
-  padding: 20px;
-`
+
 const Show = styled.p`
   cursor: pointer;
+`
 
+const List = styled.div`
+  span {
+    font-weight: 800;
+    font-size: 14px;
+  }
 `
 
 const AnswerList = (props) => (
-  <div>
+  <List>
     <ul>
       {props.showAllAnswers === false
       ? props.mostVotedAnswer ? <Answer answer={props.mostVotedAnswer} /> : <h5>Loading...</h5>
@@ -20,14 +24,10 @@ const AnswerList = (props) => (
       )}
     </ul>
       {props.showAllAnswers
-      ? <Show id={props.questionID} onClick={props.showAll}>Show top answer</Show>
-      : <Show id={props.questionID} onClick={props.showAll}>Show all answers</Show>}
+      ? <Show id={props.questionID} onClick={props.showAll}><span>Show top answer</span></Show>
+      : <Show id={props.questionID} onClick={props.showAll}><span>Show all answers</span></Show>}
 
-    <Form>
-      <input></input>
-      <button>Answer Question!</button>
-    </Form>
-  </div>
+  </List>
 
 )
 

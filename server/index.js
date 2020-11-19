@@ -27,7 +27,7 @@ app.get("/api/count", (req, res) => {
 app.get("/api/questions", (req, res) => {
   db.getFilteredQuestions(req.query.start, req.query.end, (err, result) => {
     if (err) {
-      res.send("Oh no!")
+      res.send(err)
     } else {
       res.send(result);
     }
@@ -42,6 +42,7 @@ app.get("/api/answers", (req, res) => {
     } else {
       var newResult = {};
       newResult.answers = result;
+      newResult.showAllAnswers = false;
       var mostVoted = result[0];
       for (var i = 1; i < result.length; i++) {
         if (result[i].votes > mostVoted.votes) {
@@ -61,17 +62,3 @@ app.listen(port, () => {
 
 
 
-            // var pageLimit = 5;
-      // var totalPages = Math.ceil(result.length / pageLimit);
-      // var newResult = {};
-      // newResult.questions = result;
-      // newResult.pages = {};
-      // var startingIndex = 0;
-      // for (var page = 1; page <= totalPages; page++) {
-      //   newResult.pages[page] = [];
-      //   for (var question = startingIndex; question < startingIndex + pageLimit; question++) {
-      //     newResult.pages[page].push(result[question]);
-      //   }
-      //   startingIndex += pageLimit;
-      // }
-      // // console.log(newResult);

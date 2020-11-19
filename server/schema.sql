@@ -21,7 +21,7 @@ CREATE TABLE users (
   username VARCHAR(50),
   location VARCHAR(100),
   contributions INT,
-  helpful_votes INT,
+  votes INT,
   profilePic VARCHAR(300),
   PRIMARY KEY (id)
 );
@@ -43,7 +43,7 @@ CREATE TABLE answers (
   userID INT,
   text VARCHAR(2000),
   votes INT,
-  date DATETIME,
+  date VARCHAR(100),
   PRIMARY KEY (id),
   FOREIGN KEY (questionsID) REFERENCES questions(id),
   FOREIGN KEY (userID) REFERENCES users(id)
