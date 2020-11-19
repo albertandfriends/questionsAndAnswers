@@ -6,6 +6,34 @@ const db = mysql.createConnection({
   database: "questionsAndAnswers"
 })
 
+const convertToMonth = (month) => {
+  if (Number(month) === 1) {
+    return "Jan";
+  } else if (Number(month) === 2) {
+    return "Feb";
+  } else if (Number(month) === 3) {
+    return "Mar";
+  } else if (Number(month) === 4) {
+    return "Apr";
+  } else if (Number(month) === 5) {
+    return "May";
+  } else if (Number(month) === 6) {
+    return "Jun";
+  } else if (Number(month) === 7) {
+    return "Jul";
+  } else if (Number(month) === 8) {
+    return "Aug";
+  } else if (Number(month) === 9) {
+    return "Sep";
+  } else if (Number(month) === 10) {
+    return "Oct";
+  } else if (Number(month) === 11) {
+    return "Nov";
+  } else {
+    return "Dec";
+  }
+}
+
 module.exports = {
   getQuestionCount: (callback) => {
     db.query(`SELECT COUNT(*) FROM questions;`, (err, result) => {
@@ -31,14 +59,18 @@ module.exports = {
       if (err) {
         callback(err, null)
       } else {
-        callback(null, result);
+        if (result.length > 0) {
+          callback(null, result);
+        } else {
+          callback(null, questionID);
+        }
       }
     })
   },
   insertNewQuestion: (info, callback) => {
     db.query(`SELECT * FROM users WHERE username="${info.username}";`, (err, result) => {
       if (result.length > 0) {
-        db.query(`INSERT INTO questions (userID, text, date, attractionID) VALUES ((SELECT id FROM users WHERE username="${info.username}"), "${info.question}", "${info.date.substring(0, 10).split("-")[1] + info.date.substring(0, 10).split("-")[0]}", 1);`, (err, result) => {
+        db.query(`INSERT INTO questions (userID, text, date, attractionID) VALUES ((SELECT id FROM users WHERE username="${info.username}"), "${info.question}", "${convertToMonth(info.date.substring(0, 10).split("-")[1]) + " " + info.date.substring(0, 10).split("-")[0]}", 1);`, (err, result) => {
           if (err) {
             callback(err, null);
           } else {
@@ -50,7 +82,7 @@ module.exports = {
           if (err) {
             callback(err, null)
           } else {
-            db.query(`INSERT INTO questions (userID, text, date, attractionID) VALUES ((SELECT id FROM users WHERE username="${info.username}"), "${info.question}", "${info.date.substring(0, 10)}", 1);`, (err, result) => {
+            db.query(`INSERT INTO questions (userID, text, date, attractionID) VALUES ((SELECT id FROM users WHERE username="${info.username}"), "${info.question}", "${info.date.substring(0, 10).split("-")[1] + " " + info.date.substring(0, 10).split("-")[0]}", 1);`, (err, result) => {
               if (err) {
                 callback(err, null);
               } else {
@@ -61,6 +93,32 @@ module.exports = {
         })
       }
     })
-
+  },
+  insertNewAnswer: (info, callback) => {
+    db.query(`SELECT * FROM users WHERE username="${info.username}";`, (err, result) => {
+      if (result.length > 0) {
+        db.query(`INSERT INTO answers (questionsID, userID, text, votes, date) VALUES ((SELECT id FROM questions WHERE id=${Number(info.questionID)}), (SELECT id FROM users WHERE username="${info.username}"), "${info.answer}", 0, "${convertToMonth(info.date.substring(0, 10).split("-")[1]) + " " + info.date.substring(0, 10).split("-")[0]}");`, (err, result) => {
+          if (err) {
+            callback(err, null);
+          } else {
+            callback(null, result);
+          }
+        })
+      } else {
+        db.query(`INSERT INTO users (username, location, contributions, votes, profilePic) VALUES ("${info.username}", "${info.location}", "${info.contributions}", "${info.votes}", "${info.profilePic}");`, (err, result) => {
+          if (err) {
+            callback(err, null)
+          } else {
+            db.query(`INSERT INTO answers (questionsID, userID, text, votes, date) VALUES ((SELECT id FROM questions WHERE id=${Number(info.questionID)}), (SELECT id FROM users WHERE username="${info.username}"), "${info.answer}", 0, "${convertToMonth(info.date.substring(0, 10).split("-")[1]) + " " + info.date.substring(0, 10).split("-")[0]}");`, (err, result) => {
+              if (err) {
+                callback(err, null);
+              } else {
+                callback(null, result);
+              }
+            })
+          }
+        })
+      }
+    })
   }
 }

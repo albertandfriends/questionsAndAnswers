@@ -111,12 +111,13 @@ class App extends React.Component {
     super(props)
     this.state = {
       questions: [],
+      totalQuestions: 0,
       questionToInsert: "",
       answerToInsert: "",
       pageLimit: 5,
       pages: [],
       answers: {},
-      showAllAnswers: false,
+      showAllAnswers: {},
       mostVoted: {},
       showFollow: {},
       showAnswerModal: {},
@@ -166,6 +167,7 @@ class App extends React.Component {
       answer: this.state.answerToInsert,
       questionID: event.target.name,
       username: "albertollini",
+      location: "San Francisco, CA",
       profilePic: "https://artists.ultramusicfestival.com/wp-content/uploads/2018/05/illenium-2019.jpg",
       contributions: 172,
       votes: 50,
@@ -198,8 +200,10 @@ class App extends React.Component {
   }
 
   showAll(event) {
+    var showAllObject = this.state.showAllAnswers;
+    showAllObject[event.target.name] = !showAllObject[event.target.name];
     this.setState({
-      showAllAnswers: !this.state.showAllAnswers
+      showAllAnswers: showAllObject
     })
   }
 
@@ -250,7 +254,7 @@ class App extends React.Component {
         currentPage: Number(event)
       })
     } else {
-      var idStartPoint = 1;
+      var idStartPoint = this.state.currentPage;
     }
     axios.get("/api/questions", {
       params: {
@@ -277,10 +281,12 @@ class App extends React.Component {
           showFollowObject[result.data.answers[0].questionsID] = false;
           var showAnswerModalObject = this.state.showAnswerModal;
           showAnswerModalObject[result.data.answers[0].questionsID] = false;
+          var showAllObject = this.state.showAllAnswers;
+          showAllObject[result.data.answers[0].questionsID] = false;
           this.setState({
             answers: newAnswers,
             mostVoted: mostVotedObject,
-            // showAllAnswers: showAllObject
+            showAllAnswers: showAllObject,
             showFollow: showFollowObject,
             showAnswerModal: showAnswerModalObject
           })
@@ -293,7 +299,8 @@ class App extends React.Component {
     axios.get("/api/count")
     .then((result) => {
       this.setState({
-        pages: result.data
+        pages: result.data.pages,
+        totalQuestions: result.data.number
       })
       this.getQuestionsAndAnswers();
     })
@@ -304,13 +311,13 @@ class App extends React.Component {
       <Questions>
         <Header>
           <h1>Questions & Answers</h1>
-          <span className="description">See all 20 Questions</span>
+          <span className="description">See all {this.state.totalQuestions} Questions</span>
           <form>
             <button className="questionButton" onClick={this.askQuestion}>Ask a Question</button>
             <button className="answerModalButton"><img width="18" height="15" src="https://img.icons8.com/fluent-systems-regular/24/000000/sort-down.png"/></button>
           </form>
         </Header>
-        <QuestionList showAnswerModal = {this.state.showAnswerModal} toggleAnswerModal = {this.showAnswerModal} toggleFollow={this.toggleFollow} showFollow={this.state.showFollow} mostVoted={this.state.mostVoted} showAllAnswers={this.state.showAllAnswers} showAll={this.showAll} answers={this.state.answers} questions = {this.state.questions}/>
+        <QuestionList addAnswer={this.addAnswer} changeAnswer={this.changeAnswer} showAnswerModal = {this.state.showAnswerModal} toggleAnswerModal = {this.showAnswerModal} toggleFollow={this.toggleFollow} showFollow={this.state.showFollow} mostVoted={this.state.mostVoted} showAllAnswers={this.state.showAllAnswers} showAll={this.showAll} answers={this.state.answers} questions = {this.state.questions}/>
         {this.state.askQuestion
         ? <AskQuestion addQuestion={this.addQuestion} questionToInsert={this.state.questionToInsert} changeQuestion={this.changeQuestion} attraction={{title: "Winchester Mystery House"}}/>
         : <div></div>}
@@ -327,17 +334,3 @@ class App extends React.Component {
 }
 
 export default App;
-
-
-      // showAllAnswers: {},
-
-
-          // var showAllObject = this.state.showAllAnswers;
-          // showAllObject[result.data.answers[0].questionsID] = false;
-
-
-    // var showAllObject = this.state.showAllAnswers;
-    // showAllObject[event.target.id] = !showAllObject[event.target.id];
-    // this.setState({
-    //   showAllAnswers: showAllObject
-    // })

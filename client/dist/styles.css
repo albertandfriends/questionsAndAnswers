@@ -22,4 +22,5 @@ button {
   cursor:pointer;
   overflow: hidden;
   outline:none;
+  font-weight: 800;
 }

@@ -13,13 +13,16 @@ app.get("/api/count", (req, res) => {
     if (err) {
       res.send("Oh no!")
     } else {
+      var newObject = {};
+      newObject.number = Object.values(result[0])[0];
       var pageLimit = 5;
       var newResult = Math.ceil(Object.values(result[0])[0] / pageLimit);
       var newArray = [];
       for (var i = 1; i <= newResult; i++) {
         newArray.push(i);
       }
-      res.send(newArray);
+      newObject.pages = newArray
+      res.send(newObject);
     }
   })
 })
@@ -35,7 +38,6 @@ app.get("/api/questions", (req, res) => {
 })
 
 app.get("/api/answers", (req, res) => {
-  // console.log(req.query);
   db.getAnswers(req.query.questionID, (err, result) => {
     if (err) {
       res.send("No answers for this question!")
@@ -61,6 +63,16 @@ app.post("/api/add", (req, res) => {
       console.log(err);
     } else {
       console.log(result);
+    }
+  })
+})
+
+app.post("/api/addAnswer", (req, res) => {
+  db.insertNewAnswer(req.body, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Success");
     }
   })
 })

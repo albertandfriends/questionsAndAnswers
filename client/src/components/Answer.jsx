@@ -23,9 +23,9 @@ const Head = styled.div`
     -o-transform: rotate(180deg);
     transform: rotate(180deg);
   }
-  span {
+  .username {
     font-weight: 800;
-    font-size: 18px;
+    font-size: 12px;
   }
   padding: 10px;
   width: 800px;
@@ -34,6 +34,8 @@ const Votes = styled.div`
   display: inline-block;
   .totalVotes {
     font-size: 12px;
+    font-weight: 700;
+    margin: 10px;
   }
 `
 

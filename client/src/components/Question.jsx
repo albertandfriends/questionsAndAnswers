@@ -89,7 +89,7 @@ const Question = (props) => (
         </form>}
     <Form>
       <img src="https://img.icons8.com/fluent-systems-regular/24/000000/user-male-circle.png"/>
-      <input name={props.question.id} defaultValue="Answer Question" onChange={props.changeAnswer} onClick={props.toggleAnswerModal}></input>
+      <input name={props.question.id} placeholder="Answer Question" onChange={props.changeAnswer} onClick={props.toggleAnswerModal}></input>
       {props.showAnswerModal
       ? <AnswerQuestion addAnswer={props.addAnswer} question={props.question.id} attraction={{title: "Winchester Mystery House"}}/>
       : <p></p>}

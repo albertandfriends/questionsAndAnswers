@@ -86,7 +86,7 @@ const AskQuestion = (props) => (
     <div className="modal-content">
       <h3>Get quick answers from {props.attraction.title} staff and past guests.</h3>
       <form>
-        <input onChange={props.changeQuestion} defaultValue="Hi, what would you like to know about this attraction?"></input>
+        <input onChange={props.changeQuestion} placeholder="Hi, what would you like to know about this attraction?"></input>
         <span>Note: your question will be posted publicly on the Questions & Answers page.</span>
         <button>Posting Guidelines</button>
         <Submit>
