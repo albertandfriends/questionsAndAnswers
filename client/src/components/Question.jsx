@@ -1,63 +1,100 @@
 import React from 'react';
 import AnswerList from './AnswerList.jsx'
-import axios from 'axios'
+import axios from 'axios';
+import Answer from './Answer.jsx';
+import styled, { css } from 'styled-components';
+import FollowModal from './FollowModal.jsx';
+import AnswerQuestion from './AnswerQuestion.jsx';
 
-
-class Question extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      question: props.question,
-      answers: []
-    }
-
-    this.getAnswers = this.getAnswers.bind(this);
+const Head = styled.div`
+  margin-bottom: 20px;
+  padding: 10px;
+  img {
+    border-radius: 100%;
+  };
+  p {
+    font-family: Poppins;
+    font-size: 12px;
+  };
+  .username {
+    font-weight: 600;
   }
 
-  getAnswers(event) {
-    axios.get("/api/answers", {
-      params: {
-        questionID: this.state.question.id
+  .info {
+    font-size: 12px;
+    color: #8c8c8c;
+  }
+
+  input {
+    width: 800px;
+    margin-left: 20px;
+  }
+
+  .question {
+    font-size: 16px;
+    line-height: 20px;
+    font-family: Poppins;
+  }
+
+  .contributions {
+    font-weight: 800;
+  }
+
+  .modal {
+    float: right;
+    font-size: 24px;
+    font-weight: 800
+  }
+  background-color: white;
+`
+const Header = styled.div`
+  display: inline-block;
+  margin-left: 10px;
+`
+
+const Username = styled.div`
+  font-weight: 700;
+`
+
+const Modal = styled.div`
+  float: right;
+`
+const Form = styled.form`
+  padding-left: 20px;
+  display: inline;
+`
+
+
+const Question = (props) => (
+  <Head>
+    <img width="50" height="50" src={props.question.profilePic}></img>
+    <button onClick={props.toggleFollow} className="modal" name={props.question.id}>...</button>
+    <Modal>
+      {props.showFollow
+      ? <FollowModal />
+      : <section></section>
       }
-    })
-    .then((result) => {
-      this.setState({
-        answers: result.data
-      })
-    })
-  }
+    </Modal>
 
-  componentDidMount() {
-    this.getAnswers();
-  }
-
-  render() {
-    return (
-      <div className="question">
-        {/* {console.log(this.state.question)} */}
-        <h5>Question from {this.state.question.username}:</h5>
-        <p>Location: {this.state.question.location}</p>
-        <p>Contributions: {this.state.question.contributions}</p>
-        <p>Review: {this.state.question.text}</p>
-        <AnswerList answers={this.state.answers}/>
-        <p>-----------------------------------------------------------------------</p>
-
-      </div>
-    )
-  }
-}
-
-// Remote Branch completed
-
-// const Question = (props) => (
-//   <div className="question">
-//     <p>User: {props.question.username}</p>
-//     <p>Location: {props.question.location}</p>
-//     <p>Contributions: {props.question.contributions}</p>
-//     <p>Review: {props.question.text}</p>
-//     <p>-----------------------------------------------------------------------</p>
-//   </div>
-// )
+    <Header>
+      <p><span className="username">{props.question.username}</span> asked a question {props.question.date}<br></br></p>
+      <span className="info"><img src="https://img.icons8.com/android/12/000000/marker.png"/> {props.question.location} • <span className="contributions">{props.question.contributions}</span> Contributions • <span className="contributions">{props.question.votes}</span> helpful votes</span>
+    </Header>
+    <p className="question">{props.question.text}</p>
+    {Object.keys(props.answers).length > 0
+      ? <AnswerList changeVote={props.changeVote} questionID={props.question.id} mostVotedAnswer={props.mostVotedAnswer[props.question.id]} showAllAnswers={props.showAllAnswers} showAll={props.showAll} answers={props.answers[props.question.id]}/>
+      : <form>
+          <input></input>
+          <button>Answer Question!</button>
+        </form>}
+    <Form>
+      <img src="https://img.icons8.com/fluent-systems-regular/24/000000/user-male-circle.png"/>
+      <input name={props.question.id} placeholder="Answer Question" onChange={props.changeAnswer} onClick={props.toggleAnswerModal}></input>
+      {props.showAnswerModal
+      ? <AnswerQuestion addAnswer={props.addAnswer} question={props.question.id} attraction={{title: "Winchester Mystery House"}}/>
+      : <p></p>}
+    </Form>
+  </Head>
+)
 
 export default Question;
