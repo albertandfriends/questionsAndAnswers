@@ -54,7 +54,7 @@ const questions = () => {
 const answers = () => {
   for (var i = 0; i < 100; i++) {
     var randomDate = faker.date.past().toString().split(" ")
-    db.query(`INSERT INTO answers (questionsID, userID, text, votes, date) VALUES ("${faker.random.number(19) + 1}", "${faker.random.number(29) + 1}", "${faker.lorem.paragraph()}", "${faker.random.number(50)}", "${randomDate[1] + ' ' + randomDate[3]}")`)
+    db.query(`INSERT INTO answers (questionsID, userID, text, votes, voted, date) VALUES ("${faker.random.number(19) + 1}", "${faker.random.number(29) + 1}", "${faker.lorem.paragraph()}", "${faker.random.number(50)}", false, "${randomDate[1] + ' ' + randomDate[3]}")`)
   }
 }
 

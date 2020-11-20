@@ -137,6 +137,7 @@ class App extends React.Component {
     this.changeQuestion = this.changeQuestion.bind(this);
     this.addAnswer = this.addAnswer.bind(this);
     this.changeAnswer = this.changeAnswer.bind(this);
+    this.changeVote = this.changeVote.bind(this);
   }
 
   // Insert Methods
@@ -174,12 +175,12 @@ class App extends React.Component {
       date: new Date()
     })
     .then((result) => {
-      console.log(result.data);
       var newAnswerModalObject = this.state.showAnswerModal;
       newAnswerModalObject[event.target.name] = false;
       this.setState({
         showAnswerModal: newAnswerModalObject
       })
+      event.preventDefault();
     })
   }
 
@@ -187,6 +188,24 @@ class App extends React.Component {
     this.setState({
       answerToInsert: event.target.value
     })
+  }
+
+  changeVote(event) {
+    if (event.target.id === "increase") {
+      axios.put("/api/addVote", {
+        answerID: event.target.name
+      })
+      .then((result) => {
+        this.getQuestionsAndAnswers(this.state.currentPage);
+      })
+    } else {
+      axios.put("/api/subtractVote", {
+        answerID: event.target.name
+      })
+      .then((result) => {
+        this.getQuestionsAndAnswers(this.state.currentPage);
+      })
+    }
   }
 
   // Toggles for Following/Reporting and Answers
@@ -240,7 +259,7 @@ class App extends React.Component {
       }
     } else {
       if (this.state.currentPage < this.state.pages.length) {
-        this.getQuestionsAndAnswers(this.state.currentPage + 1);
+        // this.getQuestionsAndAnswers(this.state.currentPage + 1);
       }
     }
   }
@@ -317,7 +336,7 @@ class App extends React.Component {
             <button className="answerModalButton"><img width="18" height="15" src="https://img.icons8.com/fluent-systems-regular/24/000000/sort-down.png"/></button>
           </form>
         </Header>
-        <QuestionList addAnswer={this.addAnswer} changeAnswer={this.changeAnswer} showAnswerModal = {this.state.showAnswerModal} toggleAnswerModal = {this.showAnswerModal} toggleFollow={this.toggleFollow} showFollow={this.state.showFollow} mostVoted={this.state.mostVoted} showAllAnswers={this.state.showAllAnswers} showAll={this.showAll} answers={this.state.answers} questions = {this.state.questions}/>
+        <QuestionList changeVote={this.changeVote} addAnswer={this.addAnswer} changeAnswer={this.changeAnswer} showAnswerModal = {this.state.showAnswerModal} toggleAnswerModal = {this.showAnswerModal} toggleFollow={this.toggleFollow} showFollow={this.state.showFollow} mostVoted={this.state.mostVoted} showAllAnswers={this.state.showAllAnswers} showAll={this.showAll} answers={this.state.answers} questions = {this.state.questions}/>
         {this.state.askQuestion
         ? <AskQuestion addQuestion={this.addQuestion} questionToInsert={this.state.questionToInsert} changeQuestion={this.changeQuestion} attraction={{title: "Winchester Mystery House"}}/>
         : <div></div>}

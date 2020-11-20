@@ -19,10 +19,10 @@ const AnswerList = (props) => (
   <List>
     <ul>
       {props.showAllAnswers === false
-      ? props.mostVotedAnswer ? <Answer answer={props.mostVotedAnswer} /> : <h5>No Answers For This Question</h5>
+      ? props.mostVotedAnswer ? <Answer answer={props.mostVotedAnswer} changeVote={props.changeVote}/> : <h5>No Answers For This Question</h5>
       : (props.answers
       ? props.answers.map(answer =>
-        <Answer answer={answer}/>)
+        <Answer changeVote={props.changeVote} answer={answer}/>)
       : <h5>No Answers For This Question</h5>
       )}
     </ul>

@@ -77,6 +77,26 @@ app.post("/api/addAnswer", (req, res) => {
   })
 })
 
+app.put("/api/addVote", (req, res) => {
+  db.addVote(req.body.answerID, (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send("Success");
+    }
+  })
+})
+
+app.put("/api/subtractVote", (req, res) => {
+  db.subtractVote(req.body.answerID, (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send("Success");
+    }
+  })
+})
+
 app.listen(port, () => {
   console.log("Listening on port " + port);
 })

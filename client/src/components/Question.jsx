@@ -82,7 +82,7 @@ const Question = (props) => (
     </Header>
     <p className="question">{props.question.text}</p>
     {Object.keys(props.answers).length > 0
-      ? <AnswerList questionID={props.question.id} mostVotedAnswer={props.mostVotedAnswer[props.question.id]} showAllAnswers={props.showAllAnswers} showAll={props.showAll} answers={props.answers[props.question.id]}/>
+      ? <AnswerList changeVote={props.changeVote} questionID={props.question.id} mostVotedAnswer={props.mostVotedAnswer[props.question.id]} showAllAnswers={props.showAllAnswers} showAll={props.showAll} answers={props.answers[props.question.id]}/>
       : <form>
           <input></input>
           <button>Answer Question!</button>

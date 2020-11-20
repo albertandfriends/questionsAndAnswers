@@ -37,6 +37,7 @@ const Votes = styled.div`
     font-weight: 700;
     margin: 10px;
   }
+
 `
 
 const Header = styled.div`
@@ -60,13 +61,13 @@ const Answer = (props) => (
     </Header>
       <p className="answer">{props.answer.text}</p>
     <Votes>
-      <button><img width="15" height="15" src="https://img.icons8.com/cotton/64/000000/thumb-up--v1.png"/></button>
+      <button onClick={props.changeVote} name={props.answer.id} id={"decrease"}className="increase"><img id={"increase"} name={props.answer.id} width="15" height="15" src="https://img.icons8.com/cotton/64/000000/thumb-up--v1.png"/></button>
     </Votes>
     <Votes>
       <p className="totalVotes"><span>{props.answer.votes} votes</span></p>
     </Votes>
     <Votes>
-      <button><img className="rotate" width="15" height="15" src="https://img.icons8.com/cotton/64/000000/thumb-up--v1.png"/></button>
+      <button onClick={props.changeVote} name={props.answer.id} id={"decrease"}className="decrease"><img name={props.answer.id} id={"decrease"} className="rotate" width="15" height="15" src="https://img.icons8.com/cotton/64/000000/thumb-up--v1.png"/></button>
     </Votes>
   </Head>
 

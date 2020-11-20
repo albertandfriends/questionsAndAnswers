@@ -15,7 +15,7 @@ const QuestionList = (props) => (
     <ul>
       {props.questions.length > 0
       ? props.questions.map(question =>
-        <Question addAnswer={props.addAnswer} changeAnswer={props.changeAnswer} toggleAnswerModal = {props.toggleAnswerModal} showAnswerModal = {props.showAnswerModal[question.id]} toggleFollow = {props.toggleFollow} showFollow = {props.showFollow[question.id]} mostVotedAnswer={props.mostVoted} showAllAnswers={props.showAllAnswers[question.id]} showAll={props.showAll} answers={props.answers} question={question}/>)
+        <Question addAnswer={props.addAnswer} changeVote={props.changeVote} changeAnswer={props.changeAnswer} toggleAnswerModal = {props.toggleAnswerModal} showAnswerModal = {props.showAnswerModal[question.id]} toggleFollow = {props.toggleFollow} showFollow = {props.showFollow[question.id]} mostVotedAnswer={props.mostVoted} showAllAnswers={props.showAllAnswers[question.id]} showAll={props.showAll} answers={props.answers} question={question}/>)
       : <h4>Nothing</h4>
     }
     </ul>
