@@ -3,6 +3,7 @@ import axios from 'axios';
 import QuestionList from './components/QuestionList.jsx';
 import AskQuestion from './components/AskQuestion.jsx';
 import styled, { css } from 'styled-components';
+import "../dist/styles.css";
 
 const Questions = styled.div`
   display: flex;
@@ -143,7 +144,7 @@ class App extends React.Component {
   // Insert Methods
 
   addQuestion() {
-    axios.post("/api/add", {
+    axios.post("/api/trips/questionsAndAnswers/add", {
       question: this.state.questionToInsert,
       username: "albertollini",
       location: "San Francisco, CA",
@@ -164,7 +165,7 @@ class App extends React.Component {
   }
 
   addAnswer(event) {
-    axios.post("/api/addAnswer", {
+    axios.post("/api/trips/questionsAndAnswers/addAnswer", {
       answer: this.state.answerToInsert,
       questionID: event.target.name,
       username: "albertollini",
@@ -192,14 +193,14 @@ class App extends React.Component {
 
   changeVote(event) {
     if (event.target.id === "increase") {
-      axios.put("/api/addVote", {
+      axios.put("/api/trips/questionsAndAnswers/addVote", {
         answerID: event.target.name
       })
       .then((result) => {
         this.getQuestionsAndAnswers(this.state.currentPage);
       })
     } else {
-      axios.put("/api/subtractVote", {
+      axios.put("/api/trips/questionsAndAnswers/subtractVote", {
         answerID: event.target.name
       })
       .then((result) => {
@@ -275,7 +276,7 @@ class App extends React.Component {
     } else {
       var idStartPoint = this.state.currentPage;
     }
-    axios.get("/api/questions", {
+    axios.get("/api/trips/questionsAndAnswers/questions", {
       params: {
         start: idStartPoint,
         end: idStartPoint + (this.state.pageLimit - 1),
@@ -286,7 +287,7 @@ class App extends React.Component {
         questions: result.data,
       })
       for (var i = 0; i < this.state.questions.length; i++) {
-        axios.get("/api/answers", {
+        axios.get("/api/trips/questionsAndAnswers/answers", {
           params: {
             questionID: this.state.questions[i].id
           }
@@ -315,7 +316,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    axios.get("/api/count")
+    axios.get("/api/trips/questionsAndAnswers/count")
     .then((result) => {
       this.setState({
         pages: result.data.pages,

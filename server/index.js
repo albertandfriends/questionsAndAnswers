@@ -8,7 +8,12 @@ app.use(express.static("client/dist"));
 app.use(express.json());
 app.use(cors());
 
-app.get("/api/count", (req, res) => {
+// app.get("/api/trips/questionsAndAnswers", (req, res) => {
+//   res.sendFile("../client/dist/bundle.js");
+// })
+
+app.get("/api/trips/questionsAndAnswers/count", (req, res) => {
+  console.log(req.body);
   db.getQuestionCount((err, result) => {
     if (err) {
       res.send("Oh no!")
@@ -27,7 +32,7 @@ app.get("/api/count", (req, res) => {
   })
 })
 
-app.get("/api/questions", (req, res) => {
+app.get("/api/trips/questionsAndAnswers/questions", (req, res) => {
   db.getFilteredQuestions(req.query.start, req.query.end, (err, result) => {
     if (err) {
       res.send(err)
@@ -37,7 +42,7 @@ app.get("/api/questions", (req, res) => {
   })
 })
 
-app.get("/api/answers", (req, res) => {
+app.get("/api/trips/questionsAndAnswers/answers", (req, res) => {
   db.getAnswers(req.query.questionID, (err, result) => {
     if (err) {
       res.send("No answers for this question!")
@@ -57,7 +62,7 @@ app.get("/api/answers", (req, res) => {
   })
 })
 
-app.post("/api/add", (req, res) => {
+app.post("/api/trips/questionsAndAnswers/add", (req, res) => {
   db.insertNewQuestion(req.body, (err, result) => {
     if (err) {
       console.log(err);
@@ -67,7 +72,7 @@ app.post("/api/add", (req, res) => {
   })
 })
 
-app.post("/api/addAnswer", (req, res) => {
+app.post("/api/trips/questionsAndAnswers/addAnswer", (req, res) => {
   db.insertNewAnswer(req.body, (err, result) => {
     if (err) {
       console.log(err);
@@ -77,7 +82,7 @@ app.post("/api/addAnswer", (req, res) => {
   })
 })
 
-app.put("/api/addVote", (req, res) => {
+app.put("/api/trips/questionsAndAnswers/addVote", (req, res) => {
   db.addVote(req.body.answerID, (err, result) => {
     if (err) {
       res.send(err);
@@ -87,7 +92,7 @@ app.put("/api/addVote", (req, res) => {
   })
 })
 
-app.put("/api/subtractVote", (req, res) => {
+app.put("/api/trips/questionsAndAnswers/subtractVote", (req, res) => {
   db.subtractVote(req.body.answerID, (err, result) => {
     if (err) {
       res.send(err);
